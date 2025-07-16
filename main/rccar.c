@@ -57,17 +57,30 @@ void start_webserver() {
     ESP_LOGI(TAG, "Starting server on port: %d", config.server_port);
     if (httpd_start(&server, &config) == ESP_OK) {
         ESP_LOGI(TAG, "Registering URI handlers");
+        ESP_LOGI(TAG, "Registering root");
         httpd_register_uri_handler(server, &root);
+
+        ESP_LOGI(TAG, "Registering maju");
         httpd_register_uri_handler(server, &maju);
+        ESP_LOGI(TAG, "Registering mundur");
+        httpd_register_uri_handler(server, &mundur);
+        ESP_LOGI(TAG, "Registering stop");
         httpd_register_uri_handler(server, &stop);
     }
 }
 
 void app_main() {
-    
-    gpio_reset_pin(BLINK_LED);
-    gpio_set_direction(BLINK_LED, GPIO_MODE_OUTPUT);
+    ESP_LOGI(TAG, "Initializing");
+    gpio_reset_pin(RC_PIN_BAN_KANAN_MUNDUR);
+    gpio_reset_pin(RC_PIN_BAN_KIRI_MUNDUR);
+    gpio_reset_pin(RC_PIN_BAN_KANAN_MAJU);
+    gpio_reset_pin(RC_PIN_BAN_KIRI_MAJU);
+    gpio_set_direction(RC_PIN_BAN_KANAN_MAJU, GPIO_MODE_OUTPUT);
+    gpio_set_direction(RC_PIN_BAN_KIRI_MAJU, GPIO_MODE_OUTPUT);
+    gpio_set_direction(RC_PIN_BAN_KANAN_MUNDUR, GPIO_MODE_OUTPUT);
+    gpio_set_direction(RC_PIN_BAN_KIRI_MUNDUR, GPIO_MODE_OUTPUT);
 
+    ESP_LOGI(TAG, "Initializing NVS");
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
       ESP_ERROR_CHECK(nvs_flash_erase());
@@ -75,6 +88,9 @@ void app_main() {
     }
     ESP_ERROR_CHECK(ret);
 
+    ESP_LOGI(TAG, "Initializing WiFi");
     wifi_init_softap();
     start_webserver();
+
+    ESP_LOGI(TAG, "Main returning");
 }
