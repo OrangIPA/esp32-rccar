@@ -3,6 +3,7 @@
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/semphr.h"
 #include "esp_wifi.h"
 #include "esp_log.h"
 #include <esp_http_server.h>
@@ -79,6 +80,8 @@ void app_main() {
     gpio_set_direction(RC_PIN_BAN_KIRI_MAJU, GPIO_MODE_OUTPUT);
     gpio_set_direction(RC_PIN_BAN_KANAN_MUNDUR, GPIO_MODE_OUTPUT);
     gpio_set_direction(RC_PIN_BAN_KIRI_MUNDUR, GPIO_MODE_OUTPUT);
+
+    mutex = xSemaphoreCreateMutex();
 
     ESP_LOGI(TAG, "Initializing NVS");
     esp_err_t ret = nvs_flash_init();

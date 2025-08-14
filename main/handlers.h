@@ -1,6 +1,9 @@
 #pragma once
 
 #include <esp_http_server.h>
+#include "freertos/semphr.h"
+
+extern SemaphoreHandle_t mutex;
 
 esp_err_t root_handler(httpd_req_t *req);
 extern const httpd_uri_t root;
